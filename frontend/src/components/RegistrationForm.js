@@ -18,6 +18,12 @@ const RegistrationForm = () => {
   const handleRegister = async (event) => {
     event.preventDefault();
     await addNewUser(name, age, dateOfBirth, password, gender, about);
+    setName("");
+    setAge("");
+    setDateOfBirth("");
+    setPassword("");
+    setGender("");
+    setAbout("");
     navigate("/userDetails", { state: { name } });
   };
 

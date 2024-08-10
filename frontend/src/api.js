@@ -28,6 +28,7 @@ export async function addNewUser(
     gender,
     about,
   });
+  return;
 }
 
 export async function getUserDetails(name) {
@@ -47,8 +48,13 @@ export async function updateUserData() {
   // put call
 }
 
-export async function deleteUserData() {
-  // delete call
+export async function deleteUserData(name) {
+  await axios.delete(`${BASE_URL}/user`, {
+    params: {
+      name,
+    },
+  });
+  return;
 }
 
 export async function getGenderDetails() {

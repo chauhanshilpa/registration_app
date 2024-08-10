@@ -5,7 +5,7 @@ import { getMongoDb } from "./db.js";
 
 const port = 4002;
 const app = express();
-const dbName = "registrationapp"
+const dbName = "registrationapp";
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -24,6 +24,14 @@ app.get("/user", async (req, res) => {
   const collection = client.db(dbName).collection("user");
   const user = await collection.findOne({ name: name });
   res.send(user ? user : {});
+});
+
+app.delete("/user", async (req, res) => {
+  const { name } = req.query;
+  const client = await getMongoDb();
+  const collection = client.db(dbName).collection("user");
+  await collection.findOneAndDelete({ name: name });
+  res.send();
 });
 
 app.listen(port, () => console.log(`App is listening on port ${port}`));
