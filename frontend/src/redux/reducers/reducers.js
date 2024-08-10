@@ -5,7 +5,8 @@ const initialState = {
   password: "",
   gender: "",
   about: "",
-  userDetails: {}
+  userDetails: {},
+  userId: "",
 };
 
 export const inputValuesReducer = (state = initialState, action) => {
@@ -22,8 +23,10 @@ export const inputValuesReducer = (state = initialState, action) => {
       return { ...state, gender: action.payload };
     case "about":
       return { ...state, about: action.payload };
-      case "userDetails":
-        return { ...state, userDetails: action.payload };
+    case "userDetails":
+      return { ...state, userDetails: action.payload };
+    case "userId":
+      return { ...state, userId: action.payload };
     default:
       return state;
   }

@@ -20,7 +20,41 @@ export async function addNewUser(
   gender,
   about
 ) {
-  await axios.post(`${BASE_URL}/user`, {
+  const response = await axios.post(`${BASE_URL}/user`, {
+    name,
+    age,
+    dateOfBirth,
+    password,
+    gender,
+    about,
+  });
+  return response;
+}
+
+export async function getUserDetails(userId) {
+  const response = await axios.get(`${BASE_URL}/user`, {
+    params: {
+      userId,
+    },
+  });
+  return response.data;
+}
+
+export async function loginDetails() {
+  // get call
+}
+
+export async function updateUserData(
+  userId,
+  name,
+  age,
+  dateOfBirth,
+  password,
+  gender,
+  about
+) {
+  await axios.patch(`${BASE_URL}/user`, {
+    userId,
     name,
     age,
     dateOfBirth,
@@ -31,27 +65,10 @@ export async function addNewUser(
   return;
 }
 
-export async function getUserDetails(name) {
-  const response = await axios.get(`${BASE_URL}/user`, {
-    params: {
-      name,
-    },
-  });
-  return response.data
-}
-
-export async function loginDetails() {
-  // get call
-}
-
-export async function updateUserData() {
-  // put call
-}
-
-export async function deleteUserData(name) {
+export async function deleteUserData(userId) {
   await axios.delete(`${BASE_URL}/user`, {
     params: {
-      name,
+      userId,
     },
   });
   return;

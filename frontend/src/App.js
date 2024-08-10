@@ -7,7 +7,7 @@ function App() {
   return (
     <>
       <Routes>
-        <Route exact path="/" element={<RegistrationForm />} />
+        <Route exact path="/" element={<RegistrationForm type="register"/>} />
         <Route exact path="/userDetails" element={<UserDetails />} />
       </Routes>
     </>

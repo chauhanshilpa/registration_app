@@ -12,6 +12,7 @@ const useRegistrationSelector = () => {
   const userDetails = useSelector(
     (state) => state.inputValuesReducer.userDetails
   );
+   const userId = useSelector((state) => state.inputValuesReducer.userId);
 
   return {
     name,
@@ -21,6 +22,7 @@ const useRegistrationSelector = () => {
     gender,
     about,
     userDetails,
+    userId,
   };
 };
 

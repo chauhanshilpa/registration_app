@@ -1,14 +1,17 @@
-import React, { useEffect } from "react";
-import { deleteUserData, getUserDetails, updateUserData } from "../api";
+import React, { useEffect, useState } from "react";
+import { deleteUserData, getUserDetails } from "../api";
 import { bindActionCreators } from "redux";
 import * as actionCreators from "../redux/action-creators/index";
 import { useDispatch } from "react-redux";
 import useRegistrationSelectors from "../hooks";
 import { useLocation, useNavigate } from "react-router-dom";
+import RegistrationForm from "./RegistrationForm";
 
 const UserDetails = () => {
+  const [isUpdateFormOpen, setIsUpdateFormOpen] = useState(false);
+
   const { state } = useLocation();
-  const userName = state?.name;
+  const userId = state?.userId;
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
@@ -17,27 +20,30 @@ const UserDetails = () => {
 
   useEffect(() => {
     (async function () {
-      const response = await getUserDetails(userName);
+      const response = await getUserDetails(userId);
       setUserDetails({ ...response });
     })();
     // eslint-disable-next-line
   }, []);
 
   const handleUpdate = async () => {
-    await updateUserData();
+    setIsUpdateFormOpen(true);
   };
 
   const handleDelete = async () => {
-    await deleteUserData(userName);
+    await deleteUserData(userId);
     navigate("/");
   };
 
   return (
     <div className="flex justify-center">
-      <div className="m-4 text-white p-5">
-        <div className="text-4xl font-bold text-center my-10 drop-shadow-md shadow-slate-200">
-          Your Details
+      {isUpdateFormOpen && (
+        <div className="absolute w-full z-10">
+          <RegistrationForm type="update" />
         </div>
+      )}
+      <div className="m-4 text-white p-5">
+        <div className="text-4xl font-bold text-center my-10">Your Details</div>
         <div className="text-lg font-semibold my-2">
           <span className="text-xl">Name:</span>&nbsp;&nbsp;
           <span>{userDetails.name}</span>
@@ -64,14 +70,14 @@ const UserDetails = () => {
           <span>{userDetails.about}</span>
         </div>
         <div className="text-right">
-          <span onClick={handleUpdate}>
+          <span onClick={handleUpdate} className="cursor-pointer">
             <lord-icon
               src="https://cdn.lordicon.com/lsrcesku.json"
               trigger="hover"
               style={{ width: "2rem", height: "2rem" }}
             ></lord-icon>
           </span>
-          <span onClick={handleDelete}>
+          <span onClick={handleDelete} className="cursor-pointer">
             <lord-icon
               src="https://cdn.lordicon.com/xekbkxul.json"
               trigger="hover"

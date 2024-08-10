@@ -45,3 +45,10 @@ export const setUserDetails = (value) => {
     payload: value,
   };
 };
+
+export const setUserId = (value) => {
+  return {
+    type: "userId",
+    payload: value
+  }
+}

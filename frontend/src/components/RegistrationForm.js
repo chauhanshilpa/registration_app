@@ -2,29 +2,60 @@ import { bindActionCreators } from "redux";
 import * as actionCreators from "../redux/action-creators/index";
 import { useDispatch } from "react-redux";
 import useRegistrationSelectors from "../hooks";
-import { addNewUser } from "../api";
+import { getUserDetails, addNewUser, updateUserData } from "../api";
 import { useNavigate } from "react-router-dom";
 
-const RegistrationForm = () => {
-  const { name, age, dateOfBirth, password, gender, about } =
+const RegistrationForm = ({ type }) => {
+  const { name, age, dateOfBirth, password, gender, about, userId } =
     useRegistrationSelectors();
 
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const { setName, setAge, setDateOfBirth, setPassword, setGender, setAbout } =
-    bindActionCreators(actionCreators, dispatch);
+  const {
+    setName,
+    setAge,
+    setDateOfBirth,
+    setPassword,
+    setGender,
+    setAbout,
+    setUserId,
+    setUserDetails,
+  } = bindActionCreators(actionCreators, dispatch);
 
   const handleRegister = async (event) => {
     event.preventDefault();
-    await addNewUser(name, age, dateOfBirth, password, gender, about);
-    setName("");
-    setAge("");
-    setDateOfBirth("");
-    setPassword("");
-    setGender("");
-    setAbout("");
-    navigate("/userDetails", { state: { name } });
+    if (type === "register") {
+      const response = await addNewUser(
+        name,
+        age,
+        dateOfBirth,
+        password,
+        gender,
+        about
+      );
+      const user_id = response.data.userId;
+      navigate("/userDetails", { state: { userId: user_id } });
+      setUserId(user_id);
+      setName("");
+      setAge("");
+      setDateOfBirth("");
+      setPassword("");
+      setGender("");
+      setAbout("");
+    } else if (type === "update") {
+      await updateUserData(
+        userId,
+        name,
+        age,
+        dateOfBirth,
+        password,
+        gender,
+        about
+      );
+      const response = await getUserDetails(userId);
+      setUserDetails({ ...response });
+    }
   };
 
   return (
@@ -32,14 +63,34 @@ const RegistrationForm = () => {
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto">
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-              Create an account
-            </h1>
+            {type === "register" && (
+              <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                Create an account
+              </h1>
+            )}
             <form
               className="space-y-4 md:space-y-6"
               action="#"
               onSubmit={handleRegister}
             >
+              <div className="flex justify-end">
+                {type !== "register" && (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    className="size-6 text-white cursor-pointer hover:text-gray-400"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M6 18 18 6M6 6l12 12"
+                    />
+                  </svg>
+                )}
+              </div>
               <div>
                 <label
                   htmlFor="username"
@@ -155,12 +206,21 @@ const RegistrationForm = () => {
                   required
                 />
               </div>
-              <button
-                type="submit"
-                className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 border border-white"
-              >
-                Create an account
-              </button>
+              {type === "update" ? (
+                <button
+                  type="submit"
+                  className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 border border-white"
+                >
+                  Update details
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 border border-white"
+                >
+                  Create an account
+                </button>
+              )}
             </form>
           </div>
         </div>
