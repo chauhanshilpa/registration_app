@@ -1,7 +1,7 @@
 export const setName = (value) => {
-  return{
+  return {
     type: "name",
-    payload: value
+    payload: value,
   };
 };
 
@@ -19,9 +19,9 @@ export const setDateOfBirth = (value) => {
 };
 
 export const setPassword = (value) => {
-  return{
+  return {
     type: "password",
-    payload: value
+    payload: value,
   };
 };
 
@@ -39,4 +39,9 @@ export const setAbout = (value) => {
   };
 };
 
-
+export const setUserDetails = (value) => {
+  return {
+    type: "userDetails",
+    payload: value,
+  };
+};

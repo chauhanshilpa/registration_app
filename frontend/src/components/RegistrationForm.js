@@ -3,19 +3,23 @@ import * as actionCreators from "../redux/action-creators/index";
 import { useDispatch } from "react-redux";
 import useRegistrationSelectors from "../hooks";
 import { addNewUser } from "../api";
+import { useNavigate } from "react-router-dom";
 
 const RegistrationForm = () => {
   const { name, age, dateOfBirth, password, gender, about } =
     useRegistrationSelectors();
 
+  const navigate = useNavigate();
+
   const dispatch = useDispatch();
   const { setName, setAge, setDateOfBirth, setPassword, setGender, setAbout } =
     bindActionCreators(actionCreators, dispatch);
 
- const handleRegister = async (event) => {
-   event.preventDefault();
-   await addNewUser(name, age, dateOfBirth, password, gender, about);
- };
+  const handleRegister = async (event) => {
+    event.preventDefault();
+    await addNewUser(name, age, dateOfBirth, password, gender, about);
+    navigate("/userDetails", { state: { name } });
+  };
 
   return (
     <section>

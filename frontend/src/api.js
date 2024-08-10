@@ -36,7 +36,7 @@ export async function getUserDetails(name) {
       name,
     },
   });
-  console.log(response.data);
+  return response.data
 }
 
 export async function loginDetails() {
