@@ -5,7 +5,7 @@ import useRegistrationSelectors from "../hooks";
 import { getUserDetails, addNewUser, updateUserData } from "../api";
 import { useNavigate } from "react-router-dom";
 
-const RegistrationForm = ({ type }) => {
+const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
   const { name, age, dateOfBirth, password, gender, about, userId } =
     useRegistrationSelectors();
 
@@ -35,14 +35,15 @@ const RegistrationForm = ({ type }) => {
         about
       );
       const user_id = response.data.userId;
-      navigate("/userDetails", { state: { userId: user_id } });
       setUserId(user_id);
+      navigate("/userDetails", { state: { userId: user_id } });
       setName("");
       setAge("");
       setDateOfBirth("");
       setPassword("");
       setGender("");
       setAbout("");
+      console.log(userId)
     } else if (type === "update") {
       await updateUserData(
         userId,
@@ -53,6 +54,7 @@ const RegistrationForm = ({ type }) => {
         gender,
         about
       );
+      setIsUpdateFormOpen(false);
       const response = await getUserDetails(userId);
       setUserDetails({ ...response });
     }
@@ -82,6 +84,7 @@ const RegistrationForm = ({ type }) => {
                     stroke-width="1.5"
                     stroke="currentColor"
                     className="size-6 text-white cursor-pointer hover:text-gray-400"
+                    onClick={() => setIsUpdateFormOpen(false)}
                   >
                     <path
                       stroke-linecap="round"

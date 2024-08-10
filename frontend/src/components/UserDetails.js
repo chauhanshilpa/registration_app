@@ -39,7 +39,7 @@ const UserDetails = () => {
     <div className="flex justify-center">
       {isUpdateFormOpen && (
         <div className="absolute w-full z-10">
-          <RegistrationForm type="update" />
+          <RegistrationForm type="update" setIsUpdateFormOpen ={setIsUpdateFormOpen}/>
         </div>
       )}
       <div className="m-4 text-white p-5">
