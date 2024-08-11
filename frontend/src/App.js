@@ -1,16 +1,14 @@
 import "./App.css";
-import RegistrationForm from "./components/RegistrationForm";
+import DetailsForm from "./components/DetailsForm";
 import UserDetails from "./components/UserDetails";
 import { Routes, Route } from "react-router-dom";
 
 function App() {
   return (
-    <>
-      <Routes>
-        <Route exact path="/" element={<RegistrationForm type="register"/>} />
-        <Route exact path="/userDetails" element={<UserDetails />} />
-      </Routes>
-    </>
+    <Routes>
+      <Route exact path="/" element={<DetailsForm type="register" />} />
+      <Route exact path="/userDetails" element={<UserDetails />} />
+    </Routes>
   );
 }
 
