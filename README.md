@@ -4,7 +4,7 @@
 
 This project is a full-stack user registration system with both front-end and back-end components. It includes a user registration form, CRUD operations, and appropriate database design.
 
-<p float="center"><img width=33% height=250rem alt="registration_form" src="https://github.com/user-attachments/assets/0d87a32f-4d83-471e-a69a-130f346f98db"> <img width=33% height= 250rem alt="details_page" src="https://github.com/user-attachments/assets/43d19243-0f80-4fb5-828a-44870b73f0fe"> <img width=33% height= 250rem alt="update_form" src="https://github.com/user-attachments/assets/adec3f0d-8e08-4194-bd35-6423d9596fdc"></p>
+<p float="center"><img width=49% height=250rem alt="registration_form" src="https://github.com/user-attachments/assets/0d87a32f-4d83-471e-a69a-130f346f98db"> <img width=49% height= 250rem alt="details_page" src="https://github.com/user-attachments/assets/43d19243-0f80-4fb5-828a-44870b73f0fe"></p>
 
 ## Features
 
