@@ -19,7 +19,7 @@ app.post("/user", async (req, res) => {
   // name is mandatory
   const { name } = req.body;
   if (!name) {
-    res.status(400).send({ msg: "Name cannot be null or empty" });
+    res.status(400).send({ message: "Name cannot be null or empty" });
   }
 
   const client = await getMongoDb();
@@ -28,7 +28,7 @@ app.post("/user", async (req, res) => {
   // name is unique
   const existingUser = await collection.findOne({ name: name });
   if (existingUser) {
-    res.status(400).send({ msg: "Name already exists" });
+    res.status(400).send({ message: "Name already exists" });
   }
 
   const userId = uuidv4();
@@ -42,7 +42,7 @@ app.post("/user", async (req, res) => {
   if (dbResponse.acknowledged) {
     res.status(200).send(user);
   } else {
-    res.status(500).send({ msg: "Server Error" });
+    res.status(500).send({ message: "Server Error" });
   }
 });
 
@@ -56,7 +56,7 @@ app.get("/user", async (req, res) => {
   if (user) {
     res.status(200).send(user);
   } else {
-    res.status(404).send({"msg": `No user with user ID: ${userId}`});
+    res.status(404).send({message: `No user with user ID: ${userId}`});
   }
 });
 
@@ -87,7 +87,7 @@ app.delete("/user", async (req, res) => {
   const client = await getMongoDb();
   const collection = client.db(dbName).collection("user");
   await collection.findOneAndDelete({ userId: userId });
-  res.status(200).send({"msg": `Deleted user ${userId}`});
+  res.status(200).send({message: `Deleted user ${userId}`});
 });
 
 app.listen(port, () => console.log(`App is listening on port ${port}`));
