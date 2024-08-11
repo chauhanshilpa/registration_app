@@ -5,7 +5,7 @@ import DetailsForm from "./DetailsForm";
 
 /**
  *
- * @returns a page with box containing user details with update and delete options
+ * @returns a page with box containing user details with update and delete options and conditionally shows update form
  */
 const UserDetails = () => {
   const [isUpdateFormOpen, setIsUpdateFormOpen] = useState(false);

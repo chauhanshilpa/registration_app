@@ -3,7 +3,26 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-
+/**
+ * 
+ * @param type {string} has conditional values register or update
+ * @param userId {string} contains unique if for a new register
+ * @param name {string} name of user (after register or after update)
+ * @param age {"" || number} age of user (after register or after update)
+ * @param dateOfBirth {string} date of birth of user (after register or after update)
+ * @param password {string} password set by user (after register or after update)
+ * @param gender {string} gender set by user (after register or after update)
+ * @param about {string} about data of user (after register or after update)
+ * @param setName {React.Dispatch<React.SetStateAction<string>>} set function to set name of user (during registration or updation)
+ * @param setAge {React.Dispatch<React.SetStateAction<string | number>>} set function to set age of user (during registration or updation)
+ * @param setDateOfBirth {React.Dispatch<React.SetStateAction<string>>} set function to set date of birth of user (during registration or updation)
+ * @param setPassword {React.Dispatch<React.SetStateAction<string>>} set function to set password of user (during registration or updation)
+ * @param setGender {React.Dispatch<React.SetStateAction<string>>} set function to set gender of user (during registration or updation)
+ * @param setUserId {React.Dispatch<React.SetStateAction<string>>} optional set function to set unique if of user (during registration)
+ * @param setAbout {React.Dispatch<React.SetStateAction<string>>} set function to set about data of user (during registration or updation)
+ * @param setIsUpdateFormOpen {React.Dispatch<React.SetStateAction<boolean>>} optional set function to set boolean value of update form's open state (during updation)
+ * @returns a reusable form. Here it is used for register as well as for update.
+ */
 const DetailsForm = ({
   type,
   userId,
