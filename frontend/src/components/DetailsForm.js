@@ -1,23 +1,28 @@
-import { bindActionCreators } from "redux";
-import * as actionCreators from "../redux/action-creators/index";
-import { useDispatch } from "react-redux";
-import useRegistrationSelectors from "../hooks";
 import { getUserDetails, addNewUser, updateUserData, getGenders } from "../api";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-/**
- *
- * @param type {string} It tells type of form where a register form or update form
- * @param setIsUpdateFormOpen {React.Dispatch<React.SetStateAction<boolean>> | null} It tells type of form where a register form or update form
- * @returns a form to register or update details of user
- */
-const DetailsForm = ({ type, setIsUpdateFormOpen = null }) => {
-  const [genderList, setGenderList] = useState([]);
 
-  const { name, age, dateOfBirth, password, gender, about, userId } =
-    useRegistrationSelectors();
+const DetailsForm = ({
+  type,
+  userId,
+  name,
+  age,
+  dateOfBirth,
+  password,
+  gender,
+  about,
+  setName,
+  setAge,
+  setDateOfBirth,
+  setPassword,
+  setGender,
+  setUserId=null,
+  setAbout,
+  setIsUpdateFormOpen=null,
+}) => {
+  const [genderList, setGenderList] = useState([]);
 
   useEffect(() => {
     (async function () {
@@ -29,17 +34,14 @@ const DetailsForm = ({ type, setIsUpdateFormOpen = null }) => {
 
   const navigate = useNavigate();
 
-  const dispatch = useDispatch();
-  const {
-    setName,
-    setAge,
-    setDateOfBirth,
-    setPassword,
-    setGender,
-    setAbout,
-    setUserId,
-    setUserDetails,
-  } = bindActionCreators(actionCreators, dispatch);
+  const setUserDetails = async (responseData) => {
+    setName(responseData.name);
+    setAge(responseData.age);
+    setDateOfBirth(responseData.dateOfBirth);
+    setPassword(responseData.password);
+    setGender(responseData.gender);
+    setAbout(responseData.about);
+  };
 
   const handleRegister = async (event) => {
     event.preventDefault();
@@ -52,16 +54,26 @@ const DetailsForm = ({ type, setIsUpdateFormOpen = null }) => {
         gender,
         about
       );
-      const user_id = response.data.userId;
-      setUserId(user_id);
-      navigate("/userDetails", { state: { userId: user_id } });
+      // handle status code
+      setUserId && setUserId(response.data.userId);
+      navigate("/userDetails", {
+        state: {
+          userId: response.data.userId,
+          name: name,
+          age: age,
+          dateOfBirth: dateOfBirth,
+          password: password,
+          gender: gender,
+          about: about,
+        },
+      });
+      setName("");
       setName("");
       setAge("");
       setDateOfBirth("");
       setPassword("");
-      setGender("");
+      setGender("Other");
       setAbout("");
-      console.log(userId);
     } else if (type === "update") {
       await updateUserData(
         userId,
@@ -74,7 +86,7 @@ const DetailsForm = ({ type, setIsUpdateFormOpen = null }) => {
       );
       setIsUpdateFormOpen && setIsUpdateFormOpen(false);
       const response = await getUserDetails(userId);
-      setUserDetails({ ...response });
+      setUserDetails(response);
     }
   };
 
@@ -144,6 +156,7 @@ const DetailsForm = ({ type, setIsUpdateFormOpen = null }) => {
                   type="number"
                   name="age"
                   id="age"
+                  onWheel={(e) => e.target.blur()}
                   value={age}
                   className="bg-[#F8EDED] border border-gray-400 focus:outline-none text-gray-900 text-sm rounded-lg block w-full p-2.5"
                   onChange={(event) =>

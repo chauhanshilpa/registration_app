@@ -1,10 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { deleteUserData, getUserDetails } from "../api";
-import { bindActionCreators } from "redux";
-import * as actionCreators from "../redux/action-creators/index";
-import { useDispatch } from "react-redux";
-import useRegistrationSelectors from "../hooks";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { deleteUserData } from "../api";
+import { useNavigate, useLocation } from "react-router-dom";
 import DetailsForm from "./DetailsForm";
 
 /**
@@ -13,26 +9,18 @@ import DetailsForm from "./DetailsForm";
  */
 const UserDetails = () => {
   const [isUpdateFormOpen, setIsUpdateFormOpen] = useState(false);
+  const location = useLocation();
+  const { userId, name, age, dateOfBirth, password, gender, about } =
+    location.state || {};
 
-  const { state } = useLocation();
-  const userId = state?.userId;
+  const [defaultName, setDefaultName] = useState(name);
+  const [defaultAge, setDefaultAge] = useState(age);
+  const [defaultDateOfBirth, setDefaultDateOfBirth] = useState(dateOfBirth);
+  const [defaultPassword, setDefaultPassword] = useState(password);
+  const [defaultGender, setDefaultGender] = useState(gender);
+  const [defaultAbout, setDefaultAbout] = useState(about);
+
   const navigate = useNavigate();
-
-  const dispatch = useDispatch();
-  const { setUserDetails } = bindActionCreators(actionCreators, dispatch);
-  const { userDetails } = useRegistrationSelectors();
-
-  useEffect(() => {
-    (async function () {
-      const response = await getUserDetails(userId);
-      setUserDetails({ ...response });
-    })();
-    // eslint-disable-next-line
-  }, []);
-
-  const handleUpdate = async () => {
-    setIsUpdateFormOpen(true);
-  };
 
   const handleDelete = async () => {
     await deleteUserData(userId);
@@ -45,6 +33,19 @@ const UserDetails = () => {
         <div className="absolute w-full z-10">
           <DetailsForm
             type="update"
+            userId={userId}
+            name={defaultName}
+            age={defaultAge}
+            dateOfBirth={defaultDateOfBirth}
+            password={defaultPassword}
+            gender={defaultGender}
+            about={defaultAbout}
+            setName={setDefaultName}
+            setAge={setDefaultAge}
+            setDateOfBirth={setDefaultDateOfBirth}
+            setPassword={setDefaultPassword}
+            setGender={setDefaultGender}
+            setAbout={setDefaultAbout}
             setIsUpdateFormOpen={setIsUpdateFormOpen}
           />
         </div>
@@ -52,42 +53,42 @@ const UserDetails = () => {
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto">
         <div className="w-full rounded-lg shadow dark:border md:mt-0 sm:max-w-md bg-[#E2DAD6] dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-            {/* <div className="mt-10 text-gray-800 p-10 rounded bg-[#E2DAD6] border border-gray-700"> */}
             <div className="text-4xl font-bold text-center my-10 underline">
               Your Details
             </div>
+            <div className="text-lg font-semibold my-2 hidden">
+              <span className="text-xl">User Id:</span>&nbsp;&nbsp;
+              <span className="text-gray-700 break-words">{userId}</span>
+            </div>
             <div className="text-lg font-semibold my-2">
               <span className="text-xl">Name:</span>&nbsp;&nbsp;
-              <span className="text-gray-700 break-words">
-                {userDetails.name}
-              </span>
+              <span className="text-gray-700 break-words">{defaultName}</span>
             </div>
             <div className="text-lg font-semibold my-2">
               <span className="text-xl">Age:</span>&nbsp;&nbsp;
-              <span className="text-gray-700">{userDetails.age}</span>
+              <span className="text-gray-700">{defaultAge}</span>
             </div>
             <div className="text-lg font-semibold my-2">
               <span className="text-xl">Date of Birth:</span>&nbsp;&nbsp;
-              <span className="text-gray-700">{userDetails.dateOfBirth}</span>
+              <span className="text-gray-700">{defaultDateOfBirth}</span>
             </div>
             <div className="text-lg font-semibold my-2">
               <span className="text-xl">Password:</span>&nbsp;&nbsp;
-              <span className="text-gray-700 break-words">
-                {userDetails.password}
-              </span>
+              <span className="text-gray-700 break-words">{defaultPassword}</span>
             </div>
             <div className="text-lg font-semibold my-2">
               <span className="text-xl">Gender:</span>&nbsp;&nbsp;
-              <span className="text-gray-700">{userDetails.gender}</span>
+              <span className="text-gray-700">{defaultGender}</span>
             </div>
             <div className="text-lg font-semibold my-2">
               <span className="text-xl">About:</span>&nbsp;&nbsp;
-              <span className="text-gray-700 break-words">
-                {userDetails.about}
-              </span>
+              <span className="text-gray-700 break-words">{defaultAbout}</span>
             </div>
             <div className="text-right">
-              <span onClick={handleUpdate} className="cursor-pointer">
+              <span
+                onClick={() => setIsUpdateFormOpen(true)}
+                className="cursor-pointer"
+              >
                 <lord-icon
                   src="https://cdn.lordicon.com/lsrcesku.json"
                   trigger="hover"
