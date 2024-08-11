@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { deleteUserData } from "../api";
 import { useNavigate, useLocation } from "react-router-dom";
 import DetailsForm from "./DetailsForm";
+import Modal from "./Modal";
 
 /**
  *
@@ -9,6 +10,10 @@ import DetailsForm from "./DetailsForm";
  */
 const UserDetails = () => {
   const [isUpdateFormOpen, setIsUpdateFormOpen] = useState(false);
+  const [modalData, setModalData] = useState({
+    title: "Error",
+    body: "Oops, something went wrong. Please try again later.",
+  });
   const location = useLocation();
   const { userId, name, age, dateOfBirth, password, gender, about } =
     location.state || {};
@@ -19,16 +24,35 @@ const UserDetails = () => {
   const [defaultPassword, setDefaultPassword] = useState(password);
   const [defaultGender, setDefaultGender] = useState(gender);
   const [defaultAbout, setDefaultAbout] = useState(about);
+  const modalButtonRef = useRef(null);
 
   const navigate = useNavigate();
 
   const handleDelete = async () => {
-    await deleteUserData(userId);
-    navigate("/");
+    try {
+      await deleteUserData(userId);
+      navigate("/");
+    } catch (error) {
+      const errorCode = error.response ? error.response.status : "Unknown";
+      const errorMessage = error.response
+        ? error.response.data.message
+        : error.message;
+      setModalData({
+        title: `Error ${errorCode}`,
+        body:
+          errorMessage || "Oops, something went wrong. Please try again later.",
+      });
+      modalButtonRef.current.click();
+    }
   };
 
   return (
     <section>
+      <Modal
+        modalButtonRef={modalButtonRef}
+        modalTitle={modalData.title}
+        modalBody={modalData.body}
+      />
       {isUpdateFormOpen && (
         <div className="absolute w-full z-10">
           <DetailsForm
@@ -74,7 +98,9 @@ const UserDetails = () => {
             </div>
             <div className="text-lg font-semibold my-2">
               <span className="text-xl">Password:</span>&nbsp;&nbsp;
-              <span className="text-gray-700 break-words">{defaultPassword}</span>
+              <span className="text-gray-700 break-words">
+                {defaultPassword}
+              </span>
             </div>
             <div className="text-lg font-semibold my-2">
               <span className="text-xl">Gender:</span>&nbsp;&nbsp;

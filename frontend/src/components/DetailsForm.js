@@ -1,10 +1,11 @@
 import { getUserDetails, addNewUser, updateUserData, getGenders } from "../api";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
+import Modal from "./Modal";
 
 /**
- * 
+ *
  * @param type {string} has conditional values register or update
  * @param userId {string} contains unique if for a new register
  * @param name {string} name of user (after register or after update)
@@ -37,16 +38,35 @@ const DetailsForm = ({
   setDateOfBirth,
   setPassword,
   setGender,
-  setUserId=null,
+  setUserId = null,
   setAbout,
-  setIsUpdateFormOpen=null,
+  setIsUpdateFormOpen = null,
 }) => {
   const [genderList, setGenderList] = useState([]);
+  const [modalData, setModalData] = useState({
+    title: "Error",
+    body: "Oops, something went wrong. Please try again later.",
+  });
+  const modalButtonRef = useRef(null);
 
   useEffect(() => {
     (async function () {
-      const response = await getGenders();
-      setGenderList(response);
+      try {
+        const response = await getGenders();
+        setGenderList(response);
+      } catch (error) {
+        const errorCode = error.response ? error.response.status : "Unknown";
+        const errorMessage = error.response
+          ? error.response.data.message
+          : error.message;
+        setModalData({
+          title: `Error ${errorCode}`,
+          body:
+            errorMessage ||
+            "Oops, something went wrong. Please try again later.",
+        });
+        modalButtonRef.current.click();
+      }
     })();
     // eslint-disable-next-line
   }, []);
@@ -62,55 +82,87 @@ const DetailsForm = ({
     setAbout(responseData.about);
   };
 
-  const handleRegister = async (event) => {
+  const handleFormSubmit = async (event) => {
     event.preventDefault();
     if (type === "register") {
-      const response = await addNewUser(
-        name,
-        age,
-        dateOfBirth,
-        password,
-        gender,
-        about
-      );
-      // handle status code
-      setUserId && setUserId(response.data.userId);
-      navigate("/userDetails", {
-        state: {
-          userId: response.data.userId,
-          name: name,
-          age: age,
-          dateOfBirth: dateOfBirth,
-          password: password,
-          gender: gender,
-          about: about,
-        },
-      });
-      setName("");
-      setName("");
-      setAge("");
-      setDateOfBirth("");
-      setPassword("");
-      setGender("Other");
-      setAbout("");
+      try {
+        const response = await addNewUser(
+          name,
+          age,
+          dateOfBirth,
+          password,
+          gender,
+          about
+        );
+        setUserId && setUserId(response.data.userId);
+        navigate("/userDetails", {
+          state: {
+            userId: response.data.userId,
+            name: name,
+            age: age,
+            dateOfBirth: dateOfBirth,
+            password: password,
+            gender: gender,
+            about: about,
+          },
+        });
+        setName("");
+        setName("");
+        setAge("");
+        setDateOfBirth("");
+        setPassword("");
+        setGender("Other");
+        setAbout("");
+      } catch (error) {
+        const errorCode = error.response ? error.response.status : "Unknown";
+        const errorMessage = error.response
+          ? error.response.data.message
+          : error.message;
+        setModalData({
+          title: `Error ${errorCode}`,
+          body:
+            errorMessage ||
+            "Oops, something went wrong. Please try again later.",
+        });
+        modalButtonRef.current.click();
+      }
     } else if (type === "update") {
-      await updateUserData(
-        userId,
-        name,
-        age,
-        dateOfBirth,
-        password,
-        gender,
-        about
-      );
-      setIsUpdateFormOpen && setIsUpdateFormOpen(false);
-      const response = await getUserDetails(userId);
-      setUserDetails(response);
+      try {
+        await updateUserData(
+          userId,
+          name,
+          age,
+          dateOfBirth,
+          password,
+          gender,
+          about
+        );
+        setIsUpdateFormOpen && setIsUpdateFormOpen(false);
+        const response = await getUserDetails(userId);
+        setUserDetails(response);
+      } catch (error) {
+        const errorCode = error.response ? error.response.status : "Unknown";
+        const errorMessage = error.response
+          ? error.response.data.message
+          : error.message;
+        setModalData({
+          title: `Error ${errorCode}`,
+          body:
+            errorMessage ||
+            "Oops, something went wrong. Please try again later.",
+        });
+        modalButtonRef.current.click();
+      }
     }
   };
 
   return (
     <section>
+      <Modal
+        modalButtonRef={modalButtonRef}
+        modalTitle={modalData.title}
+        modalBody={modalData.body}
+      />
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto">
         <div className="w-full rounded-lg shadow dark:border md:mt-0 sm:max-w-md bg-[#E2DAD6] dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -122,7 +174,7 @@ const DetailsForm = ({
             <form
               className="space-y-4 md:space-y-6"
               action="#"
-              onSubmit={handleRegister}
+              onSubmit={handleFormSubmit}
             >
               <div className="flex justify-end">
                 {type !== "register" && (
