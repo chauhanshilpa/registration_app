@@ -81,7 +81,7 @@ const DetailsForm = ({ type, setIsUpdateFormOpen = null }) => {
   return (
     <section>
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto">
-        <div className="w-full  rounded-lg shadow dark:border md:mt-0 sm:max-w-md bg-[#E2DAD6] dark:border-gray-700">
+        <div className="w-full rounded-lg shadow dark:border md:mt-0 sm:max-w-md bg-[#E2DAD6] dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             {type === "register" && (
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
@@ -99,7 +99,7 @@ const DetailsForm = ({ type, setIsUpdateFormOpen = null }) => {
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
-                    stroke-width="1.5"
+                    strokeWidth="1.5"
                     stroke="currentColor"
                     className="size-6 text-gray-700 cursor-pointer hover:text-gray-900"
                     onClick={() =>
@@ -107,8 +107,8 @@ const DetailsForm = ({ type, setIsUpdateFormOpen = null }) => {
                     }
                   >
                     <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       d="M6 18 18 6M6 6l12 12"
                     />
                   </svg>
