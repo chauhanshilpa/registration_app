@@ -1,17 +1,10 @@
 import axios from "axios";
-class NewUser {
-  constructor(name, age, dateOfBirth, password, gender, about) {
-    this.name = name;
-    this.age = age;
-    this.dateOfBirth = dateOfBirth;
-    this.password = password;
-    this.gender = gender;
-    this.about = about;
-  }
-}
 
 const BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL;
 
+const GENDERS = ["Other", "Male", "Female"]
+
+// add new user
 export async function addNewUser(
   name,
   age,
@@ -31,6 +24,7 @@ export async function addNewUser(
   return response;
 }
 
+// get user details
 export async function getUserDetails(userId) {
   const response = await axios.get(`${BASE_URL}/user`, {
     params: {
@@ -40,10 +34,7 @@ export async function getUserDetails(userId) {
   return response.data;
 }
 
-export async function loginDetails() {
-  // get call
-}
-
+// update user details
 export async function updateUserData(
   userId,
   name,
@@ -65,6 +56,7 @@ export async function updateUserData(
   return;
 }
 
+// delete user details
 export async function deleteUserData(userId) {
   await axios.delete(`${BASE_URL}/user`, {
     params: {
@@ -74,6 +66,7 @@ export async function deleteUserData(userId) {
   return;
 }
 
-export async function getGenderDetails() {
-  // get call
+export async function getGenders(){
+  return [...GENDERS];
 }
+

@@ -31,10 +31,12 @@ app.get("/user", async (req, res) => {
   res.send(user ? user : {});
 });
 
+// update user details
 app.patch("/user", async (req, res) => {
   const { userId, name, age, dateOfBirth, password, gender, about } = req.body;
   const client = await getMongoDb();
   const collection = client.db(dbName).collection("user");
+  console.log("userId in patch", userId)
   const user = await collection.updateOne(
     { _id: new ObjectId(userId) },
     {
@@ -51,6 +53,7 @@ app.patch("/user", async (req, res) => {
   res.send(user.acknowledged ? req.body : {});
 });
 
+// delete user details
 app.delete("/user", async (req, res) => {
   const { userId } = req.query;
   const client = await getMongoDb();

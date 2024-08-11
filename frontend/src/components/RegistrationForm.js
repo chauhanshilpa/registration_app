@@ -2,12 +2,24 @@ import { bindActionCreators } from "redux";
 import * as actionCreators from "../redux/action-creators/index";
 import { useDispatch } from "react-redux";
 import useRegistrationSelectors from "../hooks";
-import { getUserDetails, addNewUser, updateUserData } from "../api";
+import { getUserDetails, addNewUser, updateUserData, getGenders } from "../api";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
+  const [genderList, setGenderList] = useState([]);
+
   const { name, age, dateOfBirth, password, gender, about, userId } =
     useRegistrationSelectors();
+
+  useEffect(() => {
+    (async function () {
+      const response = await getGenders();
+      setGenderList(response);
+    })();
+    // eslint-disable-next-line
+  }, []);
 
   const navigate = useNavigate();
 
@@ -43,7 +55,7 @@ const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
       setPassword("");
       setGender("");
       setAbout("");
-      console.log(userId)
+      console.log(userId);
     } else if (type === "update") {
       await updateUserData(
         userId,
@@ -63,10 +75,10 @@ const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
   return (
     <section>
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto">
-        <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md dark:bg-gray-800 dark:border-gray-700">
+        <div className="w-full  rounded-lg shadow dark:border md:mt-0 sm:max-w-md bg-[#E2DAD6] dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             {type === "register" && (
-              <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+              <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
                 Create an account
               </h1>
             )}
@@ -83,7 +95,7 @@ const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
                     viewBox="0 0 24 24"
                     stroke-width="1.5"
                     stroke="currentColor"
-                    className="size-6 text-white cursor-pointer hover:text-gray-400"
+                    className="size-6 text-gray-700 cursor-pointer hover:text-gray-900"
                     onClick={() => setIsUpdateFormOpen(false)}
                   >
                     <path
@@ -97,7 +109,7 @@ const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
               <div>
                 <label
                   htmlFor="username"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Your Name
                 </label>
@@ -106,7 +118,7 @@ const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
                   name="username"
                   id="username"
                   value={name}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="bg-[#F8EDED] border border-gray-400 focus:outline-none text-gray-900 text-sm rounded-lg block w-full p-2.5"
                   placeholder="E.g. John Doe"
                   onChange={(event) => setName(event.target.value)}
                   minLength="2"
@@ -116,7 +128,7 @@ const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
               <div>
                 <label
                   htmlFor="age"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  className="block mb-2 text-sm font-medium text-gray-900 "
                 >
                   Age
                 </label>
@@ -125,12 +137,14 @@ const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
                   name="age"
                   id="age"
                   value={age}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="bg-[#F8EDED] border border-gray-400 focus:outline-none text-gray-900 text-sm rounded-lg block w-full p-2.5"
                   onChange={(event) =>
                     setAge(
                       event.target.value ? parseInt(event.target.value) : ""
                     )
                   }
+                  min="0"
+                  max="120"
                   placeholder="E.g. 25"
                   required
                 />
@@ -138,7 +152,7 @@ const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
               <div>
                 <label
                   htmlFor="dateOfBirth"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  className="block mb-2 text-sm font-medium text-gray-900 "
                 >
                   Date of Birth
                 </label>
@@ -147,9 +161,7 @@ const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
                   name="dateOfBirth"
                   id="dateOfBirth"
                   value={dateOfBirth}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  min="0"
-                  max="120"
+                  className="bg-[#F8EDED] border border-gray-400 focus:outline-none text-gray-900 text-sm rounded-lg block w-full p-2.5"
                   onChange={(event) => setDateOfBirth(event.target.value)}
                   required
                 />
@@ -157,7 +169,7 @@ const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
               <div>
                 <label
                   htmlFor="password"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  className="block mb-2 text-sm font-medium text-gray-900 "
                 >
                   Password
                 </label>
@@ -167,7 +179,7 @@ const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
                   id="password"
                   placeholder="password"
                   value={password}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="bg-[#F8EDED] border border-gray-400 focus:outline-none text-gray-900 text-sm rounded-lg block w-full p-2.5"
                   onChange={(event) => setPassword(event.target.value)}
                   minLength="10"
                   required
@@ -175,7 +187,7 @@ const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
               </div>
               <label
                 htmlFor="gender"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                className="block mb-2 text-sm font-medium text-gray-900 "
               >
                 Choose Your Gender:
               </label>
@@ -183,17 +195,22 @@ const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
               <select
                 name="gender"
                 id="gender"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                className="bg-[#F8EDED] border border-gray-400 focus:outline-none text-gray-900 text-sm rounded-lg block w-full p-2.5"
                 onChange={(event) => setGender(event.target.value)}
               >
-                <option value="Other">Other</option>
+                {genderList.map((gender) => (
+                  <option value={gender} key={uuidv4()}>
+                    {gender}
+                  </option>
+                ))}
+                {/* <option value="Other">Other</option>
                 <option value="Male">Male</option>
-                <option value="Female">Female</option>
+                <option value="Female">Female</option> */}
               </select>
               <div>
                 <label
                   htmlFor="about"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  className="block mb-2 text-sm font-medium text-gray-900 "
                 >
                   About
                 </label>
@@ -202,7 +219,7 @@ const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
                   name="about"
                   id="about"
                   value={about}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="bg-[#F8EDED] border border-gray-400 focus:outline-none text-gray-900 text-sm rounded-lg block w-full p-2.5"
                   onChange={(event) => setAbout(event.target.value)}
                   placeholder="Briefly describe yourself"
                   maxLength="5000"
@@ -212,14 +229,14 @@ const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
               {type === "update" ? (
                 <button
                   type="submit"
-                  className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 border border-white"
+                  className="w-full text-md text-gray-900 hover:text-gray-700 focus:outline-none font-medium rounded-lg px-5 py-2.5 text-center border border-gray-900"
                 >
                   Update details
                 </button>
               ) : (
                 <button
                   type="submit"
-                  className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 border border-white"
+                  className="w-full text-md text-white bg-[#508D4E] hover:bg-[#59a256] focus:outline-none font-medium rounded-lg px-5 py-2.5 text-center border border-gray-900"
                 >
                   Create an account
                 </button>

@@ -3,7 +3,7 @@ const initialState = {
   age: "",
   dateOfBirth: "",
   password: "",
-  gender: "",
+  gender: "Unknown",
   about: "",
   userDetails: {},
   userId: "",
