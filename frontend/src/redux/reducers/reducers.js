@@ -3,13 +3,13 @@ const initialState = {
   age: "",
   dateOfBirth: "",
   password: "",
-  gender: "Unknown",
+  gender: "Other",
   about: "",
   userDetails: {},
   userId: "",
 };
 
-export const inputValuesReducer = (state = initialState, action) => {
+export const valuesReducer = (state = initialState, action) => {
   switch (action.type) {
     case "name":
       return { ...state, name: action.payload };

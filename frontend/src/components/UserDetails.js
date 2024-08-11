@@ -7,6 +7,10 @@ import useRegistrationSelectors from "../hooks";
 import { useLocation, useNavigate } from "react-router-dom";
 import DetailsForm from "./DetailsForm";
 
+/**
+ * 
+ * @returns a page with box containing user details with update and delete options
+ */
 const UserDetails = () => {
   const [isUpdateFormOpen, setIsUpdateFormOpen] = useState(false);
 
@@ -38,9 +42,14 @@ const UserDetails = () => {
   return (
     <div className="flex justify-center">
       {isUpdateFormOpen && (
-        <DetailsForm type="update" setIsUpdateFormOpen={setIsUpdateFormOpen} />
+        <div className="absolute w-full z-10">
+          <DetailsForm
+            type="update"
+            setIsUpdateFormOpen={setIsUpdateFormOpen}
+          />
+        </div>
       )}
-      <div className="mt-14 text-gray-800 p-5 rounded bg-[#E2DAD6]">
+      <div className="mt-14 text-gray-800 p-10 rounded bg-[#E2DAD6] border border-gray-700">
         <div className="text-4xl font-bold text-center my-10 underline">
           Your Details
         </div>

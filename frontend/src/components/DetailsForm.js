@@ -7,7 +7,13 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
+/**
+ *
+ * @param type {string} It tells type of form where a register form or update form
+ * @param setIsUpdateFormOpen {React.Dispatch<React.SetStateAction<boolean>> | null} It tells type of form where a register form or update form
+ * @returns a form to register or update details of user
+ */
+const DetailsForm = ({ type, setIsUpdateFormOpen = null }) => {
   const [genderList, setGenderList] = useState([]);
 
   const { name, age, dateOfBirth, password, gender, about, userId } =
@@ -66,7 +72,7 @@ const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
         gender,
         about
       );
-      setIsUpdateFormOpen(false);
+      setIsUpdateFormOpen && setIsUpdateFormOpen(false);
       const response = await getUserDetails(userId);
       setUserDetails({ ...response });
     }
@@ -96,7 +102,9 @@ const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
                     stroke-width="1.5"
                     stroke="currentColor"
                     className="size-6 text-gray-700 cursor-pointer hover:text-gray-900"
-                    onClick={() => setIsUpdateFormOpen(false)}
+                    onClick={() =>
+                      setIsUpdateFormOpen && setIsUpdateFormOpen(false)
+                    }
                   >
                     <path
                       stroke-linecap="round"
@@ -122,7 +130,7 @@ const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
                   placeholder="E.g. John Doe"
                   onChange={(event) => setName(event.target.value)}
                   minLength="2"
-                  required
+                  required={type === "register" ? true : false}
                 />
               </div>
               <div>
@@ -146,7 +154,7 @@ const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
                   min="0"
                   max="120"
                   placeholder="E.g. 25"
-                  required
+                  required={type === "register" ? true : false}
                 />
               </div>
               <div>
@@ -163,7 +171,7 @@ const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
                   value={dateOfBirth}
                   className="bg-[#F8EDED] border border-gray-400 focus:outline-none text-gray-900 text-sm rounded-lg block w-full p-2.5"
                   onChange={(event) => setDateOfBirth(event.target.value)}
-                  required
+                  required={type === "register" ? true : false}
                 />
               </div>
               <div>
@@ -182,7 +190,7 @@ const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
                   className="bg-[#F8EDED] border border-gray-400 focus:outline-none text-gray-900 text-sm rounded-lg block w-full p-2.5"
                   onChange={(event) => setPassword(event.target.value)}
                   minLength="10"
-                  required
+                  required={type === "register" ? true : false}
                 />
               </div>
               <label
@@ -195,6 +203,7 @@ const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
               <select
                 name="gender"
                 id="gender"
+                value={gender}
                 className="bg-[#F8EDED] border border-gray-400 focus:outline-none text-gray-900 text-sm rounded-lg block w-full p-2.5"
                 onChange={(event) => setGender(event.target.value)}
               >
@@ -203,9 +212,6 @@ const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
                     {gender}
                   </option>
                 ))}
-                {/* <option value="Other">Other</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option> */}
               </select>
               <div>
                 <label
@@ -223,7 +229,7 @@ const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
                   onChange={(event) => setAbout(event.target.value)}
                   placeholder="Briefly describe yourself"
                   maxLength="5000"
-                  required
+                  required={type === "register" ? true : false}
                 />
               </div>
               {type === "update" ? (
@@ -249,4 +255,4 @@ const RegistrationForm = ({ type, setIsUpdateFormOpen = false }) => {
   );
 };
 
-export default RegistrationForm;
+export default DetailsForm;
