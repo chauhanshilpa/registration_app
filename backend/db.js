@@ -1,7 +1,7 @@
 import { MongoClient } from "mongodb";
 
 export async function getMongoDb() {
-  const uri = "mongodb://mongo:27017";
+  const uri = "mongodb://registration_mongo:27017";
   const client = new MongoClient(uri);
   try {
     await client.connect();
