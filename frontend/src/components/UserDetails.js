@@ -1,19 +1,15 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { deleteUserData } from "../api";
 import { useNavigate, useLocation } from "react-router-dom";
 import DetailsForm from "./DetailsForm";
-import Modal from "./Modal";
 
 /**
- *
- * @returns a page with box containing user details with update and delete options and conditionally shows update form
+ *  @param setModalData {React.Dispatch<React.SetStateAction<{title: string;body: string;}>>} set function to set modal data if error occurs
+ *  @param modalButtonRef {React.MutableRefObject<null>} referenceof modal button
+ *  @returns a page with box containing user details with update and delete options and conditionally shows update form
  */
-const UserDetails = () => {
+const UserDetails = ({ setModalData, modalButtonRef }) => {
   const [isUpdateFormOpen, setIsUpdateFormOpen] = useState(false);
-  const [modalData, setModalData] = useState({
-    title: "Error",
-    body: "Oops, something went wrong. Please try again later.",
-  });
   const location = useLocation();
   const { userId, name, age, dateOfBirth, password, gender, about } =
     location.state || {};
@@ -24,7 +20,6 @@ const UserDetails = () => {
   const [defaultPassword, setDefaultPassword] = useState(password);
   const [defaultGender, setDefaultGender] = useState(gender);
   const [defaultAbout, setDefaultAbout] = useState(about);
-  const modalButtonRef = useRef(null);
 
   const navigate = useNavigate();
 
@@ -33,12 +28,11 @@ const UserDetails = () => {
       await deleteUserData(userId);
       navigate("/");
     } catch (error) {
-      const errorCode = error.response ? error.response.status : "Unknown";
       const errorMessage = error.response
         ? error.response.data.message
         : error.message;
       setModalData({
-        title: `Error ${errorCode}`,
+        title: "Error",
         body:
           errorMessage || "Oops, something went wrong. Please try again later.",
       });
@@ -48,11 +42,6 @@ const UserDetails = () => {
 
   return (
     <section>
-      <Modal
-        modalButtonRef={modalButtonRef}
-        modalTitle={modalData.title}
-        modalBody={modalData.body}
-      />
       {isUpdateFormOpen && (
         <div className="absolute w-full z-10">
           <DetailsForm
@@ -71,6 +60,8 @@ const UserDetails = () => {
             setGender={setDefaultGender}
             setAbout={setDefaultAbout}
             setIsUpdateFormOpen={setIsUpdateFormOpen}
+            setModalData={setModalData}
+            modalButtonRef={modalButtonRef}
           />
         </div>
       )}

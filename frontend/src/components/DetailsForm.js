@@ -1,8 +1,7 @@
 import { getUserDetails, addNewUser, updateUserData, getGenders } from "../api";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState} from "react";
 import { v4 as uuidv4 } from "uuid";
-import Modal from "./Modal";
 
 /**
  *
@@ -22,6 +21,8 @@ import Modal from "./Modal";
  * @param setUserId {React.Dispatch<React.SetStateAction<string>>} optional set function to set unique if of user (during registration)
  * @param setAbout {React.Dispatch<React.SetStateAction<string>>} set function to set about data of user (during registration or updation)
  * @param setIsUpdateFormOpen {React.Dispatch<React.SetStateAction<boolean>>} optional set function to set boolean value of update form's open state (during updation)
+ * @param setModalData {React.Dispatch<React.SetStateAction<{title: string; body: string;}>>} set function to set modal data if error occurs
+ * @param modalButtonRef {React.MutableRefObject<null>} reference of modal button
  * @returns a reusable form. Here it is used for register as well as for update.
  */
 const DetailsForm = ({
@@ -41,13 +42,10 @@ const DetailsForm = ({
   setUserId = null,
   setAbout,
   setIsUpdateFormOpen = null,
+  setModalData,
+  modalButtonRef
 }) => {
   const [genderList, setGenderList] = useState([]);
-  const [modalData, setModalData] = useState({
-    title: "Error",
-    body: "Oops, something went wrong. Please try again later.",
-  });
-  const modalButtonRef = useRef(null);
 
   useEffect(() => {
     (async function () {
@@ -55,12 +53,11 @@ const DetailsForm = ({
         const response = await getGenders();
         setGenderList(response);
       } catch (error) {
-        const errorCode = error.response ? error.response.status : "Unknown";
         const errorMessage = error.response
           ? error.response.data.message
           : error.message;
         setModalData({
-          title: `Error ${errorCode}`,
+          title: "Error",
           body:
             errorMessage ||
             "Oops, something went wrong. Please try again later.",
@@ -114,12 +111,11 @@ const DetailsForm = ({
         setGender("Other");
         setAbout("");
       } catch (error) {
-        const errorCode = error.response ? error.response.status : "Unknown";
         const errorMessage = error.response
           ? error.response.data.message
           : error.message;
         setModalData({
-          title: `Error ${errorCode}`,
+          title: "Error",
           body:
             errorMessage ||
             "Oops, something went wrong. Please try again later.",
@@ -141,12 +137,11 @@ const DetailsForm = ({
         const response = await getUserDetails(userId);
         setUserDetails(response);
       } catch (error) {
-        const errorCode = error.response ? error.response.status : "Unknown";
         const errorMessage = error.response
           ? error.response.data.message
           : error.message;
         setModalData({
-          title: `Error ${errorCode}`,
+          title: "Error",
           body:
             errorMessage ||
             "Oops, something went wrong. Please try again later.",
@@ -158,12 +153,7 @@ const DetailsForm = ({
 
   return (
     <section>
-      <Modal
-        modalButtonRef={modalButtonRef}
-        modalTitle={modalData.title}
-        modalBody={modalData.body}
-      />
-      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto">
+      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto z-10">
         <div className="w-full rounded-lg shadow dark:border md:mt-0 sm:max-w-md bg-[#E2DAD6] dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             {type === "register" && (

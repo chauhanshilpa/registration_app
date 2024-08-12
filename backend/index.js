@@ -20,6 +20,7 @@ app.post("/user", async (req, res) => {
   const { name } = req.body;
   if (!name) {
     res.status(400).send({ message: "Name cannot be null or empty" });
+    return;
   }
 
   const client = await getMongoDb();
@@ -29,6 +30,7 @@ app.post("/user", async (req, res) => {
   const existingUser = await collection.findOne({ name: name });
   if (existingUser) {
     res.status(400).send({ message: "Name already exists" });
+    return;
   }
 
   const userId = uuidv4();
@@ -42,7 +44,7 @@ app.post("/user", async (req, res) => {
   if (dbResponse.acknowledged) {
     res.status(200).send(user);
   } else {
-    res.status(500).send({ message: "Server Error" });
+    res.status(500).send({ message: "Server Error. Please contact support." });
   }
 });
 
@@ -51,12 +53,12 @@ app.get("/user", async (req, res) => {
   const { userId } = req.query;
   const client = await getMongoDb();
   const collection = client.db(dbName).collection("user");
-  const user = await collection.findOne({ userId: userId });
+  const dbResponse = await collection.findOne({ userId: userId });
 
-  if (user) {
-    res.status(200).send(user);
+  if (dbResponse) {
+    res.status(200).send(dbResponse);
   } else {
-    res.status(404).send({message: `No user with user ID: ${userId}`});
+    res.status(404).send({ message: "No such user exists" });
   }
 });
 
@@ -65,7 +67,14 @@ app.patch("/user", async (req, res) => {
   const { userId, name, age, dateOfBirth, password, gender, about } = req.body;
   const client = await getMongoDb();
   const collection = client.db(dbName).collection("user");
-  const user = await collection.updateOne(
+
+  const user = await collection.findOne({ userId: userId });
+  if (!user) {
+    res.status(404).send({ message: "No such user exists" });
+    return;
+  }
+
+  const dbResponse = await collection.updateOne(
     { userId: userId },
     {
       $set: {
@@ -78,7 +87,12 @@ app.patch("/user", async (req, res) => {
       },
     }
   );
-  res.send(user.acknowledged ? req.body : {});
+
+  if (dbResponse.acknowledged) {
+    res.status(200).send(req.body);
+  } else {
+    res.status(500).send({ message: "Server Error. Please contact support." });
+  }
 });
 
 // delete user details
@@ -86,8 +100,20 @@ app.delete("/user", async (req, res) => {
   const { userId } = req.query;
   const client = await getMongoDb();
   const collection = client.db(dbName).collection("user");
-  await collection.findOneAndDelete({ userId: userId });
-  res.status(200).send({message: `Deleted user ${userId}`});
+
+  const user = await collection.findOne({ userId: userId });
+  if (!user) {
+    res.status(404).send({ message: "No such user exists" });
+    return;
+  }
+
+  const dbResponse = await collection.findOneAndDelete({ userId: userId });
+
+  if (dbResponse) {
+    res.status(200).send(req.body);
+  } else {
+    res.status(500).send({ message: "Server Error. Please contact support." });
+  }
 });
 
 app.listen(port, () => console.log(`App is listening on port ${port}`));
